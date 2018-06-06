@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>nodejs 搭建 TCP 转发服务 | Wiki</title>
+  <meta name="author" content="北极丶企鹅">
+  
+  <meta name="description" content="技术,前端,交流">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="nodejs 搭建 TCP 转发服务"/>
+  <meta property="og:site_name" content="Wiki"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1>nodejs 搭建 TCP 转发服务</h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  <div class="col-xs-12 col-sm-3 col-md-3 toc"> 
+	<!-- toc -->
+<script type="text/javascript">
+		jQuery(document).ready(function() {
+ 		   generateWikiTOC('.note', '.toc',  2 , 2 );
+		});
+</script>
+  </div><!-- col-md-3 -->
+  
+  
+
+  
+  <div class="col-xs-12 col-sm-9 col-md-9 note">
+	
+
+	  <!-- content -->
+	  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近一直在研究高精度定位方面，公司提供了一台司南M300作为接收机。接收机接收的数据支持通过TCP协议通讯，于是需要一个搭建TCP服务器接受M300的数据，以下为通过nodejs搭建的TCP 服务器和模拟的客户端</p>
+<h3 id="服务端代码"><a href="#服务端代码" class="headerlink" title="服务端代码"></a>服务端代码</h3><p>server.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Nodejs TCP服务器转发数据</span></span><br><span class="line"><span class="comment"> * User: syhyz1990@qq.com</span></span><br><span class="line"><span class="comment"> * Date: 18-06-06</span></span><br><span class="line"><span class="comment"> * Time: 下午3:44</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> net = <span class="built_in">require</span>(<span class="string">'net'</span>);</span><br><span class="line"><span class="keyword">const</span> PORT = <span class="number">1504</span>; <span class="comment">//定义端口号</span></span><br><span class="line"><span class="keyword">let</span> idRecorder = <span class="number">1</span>;  <span class="comment">//id初始编号</span></span><br><span class="line"><span class="keyword">const</span> server = net.createServer();</span><br><span class="line"></span><br><span class="line"><span class="comment">//需要登陆的客户端</span></span><br><span class="line"><span class="keyword">const</span> sockets = [];</span><br><span class="line"></span><br><span class="line"><span class="comment">//接受新的客户端连接  </span></span><br><span class="line">server.on(<span class="string">'connection'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">socket</span>) </span>&#123;</span><br><span class="line">    socket._id = idRecorder++;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`当前connection_id: <span class="subst">$&#123;socket._id&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//从连接中读取数据</span></span><br><span class="line">    socket.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'got data:'</span>, data);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断是否是终端用户</span></span><br><span class="line">        <span class="keyword">if</span> (data.toString().trim() === <span class="string">'GET/RTCM32,UserName="ABC",Pawword="ABC"\\r\\n'</span>) &#123;</span><br><span class="line">            sockets.push(socket);</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'模拟终端已登录'</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//广播数据</span></span><br><span class="line">        <span class="comment">//每当一个已连接的用户输入数据，就将这些数据广播给其他所有已登录用户</span></span><br><span class="line">        sockets.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">otherSocket</span>) </span>&#123;</span><br><span class="line">            <span class="comment">//console.log(otherSocket.remoteAddress + ':' + otherSocket.remotePort);</span></span><br><span class="line">            <span class="keyword">if</span> (otherSocket !== socket) &#123;</span><br><span class="line">                otherSocket.write(data);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//删除被关闭的连接  </span></span><br><span class="line">        socket.on(<span class="string">'close'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'connection closed'</span>);</span><br><span class="line">            <span class="keyword">const</span> index = sockets.indexOf(socket);</span><br><span class="line">            sockets.splice(index, <span class="number">1</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//console.log(sockets);</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Server error:'</span>, err.message);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.on(<span class="string">'close'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Server closed'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(PORT);</span><br></pre></td></tr></table></figure>
+<h3 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h3><p>client.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> net = <span class="built_in">require</span>(<span class="string">'net'</span>);</span><br><span class="line"><span class="keyword">let</span> port = <span class="number">1504</span>;</span><br><span class="line"><span class="keyword">let</span> quitting = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">let</span> conn;</span><br><span class="line"><span class="keyword">let</span> retryTimeout = <span class="number">3000</span>;    <span class="comment">//三秒，定义三秒后重新连接</span></span><br><span class="line"><span class="keyword">let</span> retriedTimes = <span class="number">0</span>;   <span class="comment">//记录重新连接的次数</span></span><br><span class="line"><span class="keyword">let</span> maxRetries = <span class="number">10</span>;    <span class="comment">//最多重新连接十次</span></span><br><span class="line"></span><br><span class="line">process.stdin.resume(); <span class="comment">//process.stdin流来接受用户的键盘输入，这个可读流初始化时处于暂停状态，调用流上的resume()方法来恢复流</span></span><br><span class="line"></span><br><span class="line">process.stdin.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (data.toString().trim().toLowerCase() === <span class="string">'quit'</span>)&#123;</span><br><span class="line">        quitting = <span class="literal">true</span>;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'quitting'</span>);</span><br><span class="line">        conn.end();</span><br><span class="line">        process.stdin.pause();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        conn.write(data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//连接时设置最多连接十次，并且开启定时器三秒后再连接</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">connect</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">reconnect</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (retriedTimes &gt;= maxRetries) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Max retries have been exceeded, I give up.'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        retriedTimes +=<span class="number">1</span>;</span><br><span class="line">        setTimeout(connect, retryTimeout);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    conn = net.createConnection(port);</span><br><span class="line"></span><br><span class="line">    conn.on(<span class="string">'connect'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        retriedTimes = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'connect to server'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    conn.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Error in connection:'</span>, err);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    conn.on(<span class="string">'close'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(! quitting) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'connection got closed, will try to reconnect'</span>);</span><br><span class="line">            reconnect();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//打印</span></span><br><span class="line">    conn.pipe(process.stdout, &#123;<span class="attr">end</span>: <span class="literal">false</span>&#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+			
+			
+		
+	
+		
+			
+			
+			
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/wiki/regexp.html" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2018 北极丶企鹅
+  
+      with help from <a href="https://hexo.io" target="_blank">Hexo</a> and <small> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh"><img title="知识共享许可协议" style="border-width: 0px; vertical-align: middle; display: inline; " src="/images/license.png"></a> </small>
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+</body>
+</html>

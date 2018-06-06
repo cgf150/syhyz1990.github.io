@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://syhyz1990.github.io/wiki/nodejs-socket.html</loc>
+    
+    <lastmod>2018-06-06T08:57:19.748Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://syhyz1990.github.io/wiki/vue-standard.html</loc>
+    
+    <lastmod>2018-06-06T08:46:02.754Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://syhyz1990.github.io/wiki/regexp.html</loc>
     
     <lastmod>2018-06-05T10:01:59.398Z</lastmod>
@@ -54,13 +68,6 @@
     <loc>https://syhyz1990.github.io/wiki/mobile-development.html</loc>
     
     <lastmod>2018-06-05T08:23:06.518Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://syhyz1990.github.io/wiki/vue-standard.html</loc>
-    
-    <lastmod>2018-06-05T08:23:06.505Z</lastmod>
     
   </url>
   
