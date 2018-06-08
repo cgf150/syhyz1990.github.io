@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>防抖与节流 | Wiki</title>
+  <meta name="author" content="北极丶企鹅">
+  
+  <meta name="description" content="技术,前端,交流">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="防抖与节流"/>
+  <meta property="og:site_name" content="Wiki"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1>防抖与节流</h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  <div class="col-xs-12 col-sm-3 col-md-3 toc"> 
+	<!-- toc -->
+<script type="text/javascript">
+		jQuery(document).ready(function() {
+ 		   generateWikiTOC('.note', '.toc',  2 , 2 );
+		});
+</script>
+  </div><!-- col-md-3 -->
+  
+  
+
+  
+  <div class="col-xs-12 col-sm-9 col-md-9 note">
+	
+
+	  <!-- content -->
+	  <h2 id="节流和防抖"><a href="#节流和防抖" class="headerlink" title="节流和防抖"></a>节流和防抖</h2><p>窗口的 <span class="label label-info">resize</span>、<span class="label label-info">scroll</span>，输入框内容校验等操作时，如果这些操作处理函数较为复杂或页面频繁重渲染等操作时，如果事件触发的频率无限制，会加重浏览器的负担，导致用户体验非常糟糕。此时我们可以采用debounce（防抖）和throttle（节流）的方式来减少触发的频率，同时又不影响实际效果。</p>
+<h3 id="节流（throttle）"><a href="#节流（throttle）" class="headerlink" title="节流（throttle）"></a>节流（throttle）</h3><p>指定时间间隔内只会执行一次任务；scroll事件时使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 节流函数</span></span><br><span class="line"><span class="comment">* @param func</span></span><br><span class="line"><span class="comment">* @param limit</span></span><br><span class="line"><span class="comment">* @url https://codeburst.io/throttling-and-debouncing-in-javascript-b01cad5c8edf</span></span><br><span class="line"><span class="comment">* @returns &#123;Function&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//简化版</span></span><br><span class="line"><span class="keyword">const</span> throttle = <span class="function">(<span class="params">func, limit</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> inThrottle</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> args = <span class="built_in">arguments</span></span><br><span class="line">        <span class="keyword">const</span> context = <span class="keyword">this</span></span><br><span class="line">        <span class="keyword">if</span> (!inThrottle) &#123;</span><br><span class="line">            func.apply(context, args)</span><br><span class="line">            inThrottle = <span class="literal">true</span></span><br><span class="line">            setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> inThrottle = <span class="literal">false</span>, limit)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//完全版</span></span><br><span class="line"><span class="keyword">const</span> throttle = <span class="function">(<span class="params">func, limit</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> lastFunc</span><br><span class="line">    <span class="keyword">let</span> lastRan</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> context = <span class="keyword">this</span></span><br><span class="line">        <span class="keyword">const</span> args = <span class="built_in">arguments</span></span><br><span class="line">        <span class="keyword">if</span> (!lastRan) &#123;</span><br><span class="line">            func.apply(context, args)</span><br><span class="line">            lastRan = <span class="built_in">Date</span>.now()</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            clearTimeout(lastFunc)</span><br><span class="line">            lastFunc = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> ((<span class="built_in">Date</span>.now() - lastRan) &gt;= limit) &#123;</span><br><span class="line">                    func.apply(context, args)</span><br><span class="line">                    lastRan = <span class="built_in">Date</span>.now()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;, limit - (<span class="built_in">Date</span>.now() - lastRan))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="防抖（debounce）"><a href="#防抖（debounce）" class="headerlink" title="防抖（debounce）"></a>防抖（debounce）</h3><p>任务频繁触发的情况下，只有任务触发的间隔超过指定间隔的时候，任务才会执行。resize事件使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 防抖函数</span></span><br><span class="line"><span class="comment">* @param func</span></span><br><span class="line"><span class="comment">* @param delay</span></span><br><span class="line"><span class="comment">* @returns &#123;Function&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> debounce = <span class="function">(<span class="params">func, delay</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> inDebounce</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> context = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">const</span> args = <span class="built_in">arguments</span></span><br><span class="line">    clearTimeout(inDebounce)</span><br><span class="line">    inDebounce = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> func.apply(context, args), delay)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+			
+			
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+			
+		
+	
+		
+	
+		
+	
+		
+			
+		
+	
+		
+	
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/wiki/js-type-judgment.html" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2018 北极丶企鹅
+  
+      with help from <a href="https://hexo.io" target="_blank">Hexo</a> and <small> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh"><img title="知识共享许可协议" style="border-width: 0px; vertical-align: middle; display: inline; " src="/images/license.png"></a> </small>
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+</body>
+</html>

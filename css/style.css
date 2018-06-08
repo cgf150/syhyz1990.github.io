@@ -65,6 +65,10 @@ body {
 
 .page p {
   margin: 1.0em 0em;
+  line-height: 26px;
+}
+.page li{
+  line-height: 26px;
 }
 
 .page .panel-heading {
@@ -325,6 +329,7 @@ h6, section h5, section section h4, section section section h3 {
 
 h2, h3 {
   margin: 0.5em 0px;
+  padding: 5px 0;
 }
 
 .page-header .brand {
