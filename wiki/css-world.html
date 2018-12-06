@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>css-world | Wiki</title>
+  <title>css常用样式 | Wiki</title>
   <meta name="author" content="北极丶企鹅">
   
   <meta name="description" content="技术,前端,交流">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="css-world"/>
+  <meta property="og:title" content="css常用样式"/>
   <meta property="og:site_name" content="Wiki"/>
 
   
@@ -45,7 +45,7 @@
   <div class="container" id="container">
 	<div class="content">
 	  <div class="page-header">		
-  <h1>css-world</h1>
+  <h1>css常用样式</h1>
 </div>		
 
 <div class="row page">
@@ -72,6 +72,8 @@
 <h3 id="图标和文字垂直对齐"><a href="#图标和文字垂直对齐" class="headerlink" title="图标和文字垂直对齐"></a><a href="http://demo.cssworld.cn/5/1-1.php" target="_blank" rel="noopener">图标和文字垂直对齐</a></h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.icon-arrow</span> &#123;</span><br><span class="line"> <span class="attribute">display</span>: inline-block;</span><br><span class="line"> <span class="attribute">width</span>: <span class="number">20px</span>;</span><br><span class="line"> height: 1ex;  //关键</span><br><span class="line"> <span class="selector-tag">background</span>: <span class="selector-tag">url</span>(<span class="selector-tag">arrow</span><span class="selector-class">.png</span>) <span class="selector-tag">no-repeat</span> <span class="selector-tag">center</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="多行文本垂直居中"><a href="#多行文本垂直居中" class="headerlink" title="多行文本垂直居中"></a><a href="http://demo.cssworld.cn/5/2-4.php" target="_blank" rel="noopener">多行文本垂直居中</a></h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line"> line-height: 120px;     //关键</span><br><span class="line"> <span class="selector-tag">background-color</span>: <span class="selector-id">#f0f3f9</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.content</span> &#123;</span><br><span class="line"> display: inline-block;    //关键</span><br><span class="line"> <span class="selector-tag">line-height</span>: 20<span class="selector-tag">px</span>;       </span><br><span class="line"> <span class="selector-tag">margin</span>: 0 20<span class="selector-tag">px</span>;</span><br><span class="line"> vertical-align: middle;  //关键</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="图片水平垂直居中"><a href="#图片水平垂直居中" class="headerlink" title="图片水平垂直居中"></a><a href="http://demo.cssworld.cn/5/3-4.php" target="_blank" rel="noopener">图片水平垂直居中</a></h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">128px</span>;</span><br><span class="line">    display: table-cell;  //关键</span><br><span class="line">    <span class="selector-tag">background-color</span>: <span class="selector-id">#f0f3f9</span>;</span><br><span class="line">    vertical-align: middle; //关键</span><br><span class="line">    <span class="selector-tag">text-align</span>: <span class="selector-tag">center</span>;   </span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.box</span> <span class="selector-tag">img</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">96px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="图片水平垂直居中-1"><a href="#图片水平垂直居中-1" class="headerlink" title="图片水平垂直居中"></a>图片水平垂直居中</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"menu.png"</span>/&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span>要居中的文本</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  font-size: 18px; //可选</span><br><span class="line">  line-height: 30px;  //可选</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">span</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="attribute">display</span>: inline-block;</span><br><span class="line">  <span class="attribute">line-height</span>: <span class="number">1</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">1em</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">span</span><span class="selector-pseudo">::before</span> &#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="string">"\u200B"</span>;</span><br><span class="line">  <span class="attribute">visibility</span>: hidden;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">span</span> <span class="selector-tag">img</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">1em</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">1em</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 	  
 
 	  <div>
@@ -85,6 +87,10 @@
 	
 	
 		
+			
+		
+	
+		
 	
 		
 			
@@ -125,7 +131,7 @@
 	
 	
 	
-		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+		<li class="prev"><a href="/wiki/rem -and-vm.html" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
 	
 	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
 	
